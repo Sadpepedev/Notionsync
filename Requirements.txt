@@ -1,0 +1,22 @@
+# Core requirements
+
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Database connectors - uncomment the one you need
+
+# psycopg2-binary>=2.9.9  # PostgreSQL
+
+# mysql-connector-python>=8.2.0  # MySQL
+
+# pymongo>=4.6.0  # MongoDB
+
+# SQLite is built-in
+
+# Optional: For advanced features
+
+# schedule>=1.2.0  # For scheduled execution
+
+# tenacity>=8.2.0  # For retry logic
+
+# colorlog>=6.8.0  # For colored console output
