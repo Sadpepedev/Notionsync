@@ -1,0 +1,58 @@
+name: Sync to Notion
+
+on:
+schedule:
+# Run every 6 hours
+- cron: ‘0 */6 * * *’
+
+workflow_dispatch:
+# Allow manual trigger
+inputs:
+debug:
+description: ‘Enable debug logging’
+required: false
+default: ‘false’
+
+jobs:
+sync:
+runs-on: ubuntu-latest
+
+```
+steps:
+- name: Checkout repository
+  uses: actions/checkout@v3
+
+- name: Set up Python
+  uses: actions/setup-python@v4
+  with:
+    python-version: '3.9'
+    cache: 'pip'
+
+- name: Install dependencies
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+
+- name: Run sync script
+  env:
+    NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+    NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+    DB_TYPE: ${{ secrets.DB_TYPE }}
+    DB_HOST: ${{ secrets.DB_HOST }}
+    DB_PORT: ${{ secrets.DB_PORT }}
+    DB_NAME: ${{ secrets.DB_NAME }}
+    DB_USER: ${{ secrets.DB_USER }}
+    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    LOG_LEVEL: ${{ github.event.inputs.debug == 'true' && 'DEBUG' || 'INFO' }}
+  run: python notion_sync.py
+
+- name: Upload logs on failure
+  if: failure()
+  uses: actions/upload-artifact@v3
+  with:
+    name: sync-logs
+    path: |
+      *.log
+      logs/
+    retention-days: 7
+```
